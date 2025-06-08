@@ -1,0 +1,6 @@
+{
+  "name": "Youth Talent Hub",
+  "description": "A modern platform for young talents to showcase their skills and connect with opportunities. This is a frontend-only demonstration application; all backend functionalities like user registration, login, and data storage are simulated using local browser storage and mock services. No actual server-side operations (Node.js) are implemented in this package.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}

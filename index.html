@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Youth Talent Hub</title>
+  <!-- Import Map for React and other libraries -->
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@^19.1.0",
+        "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+        "react-router-dom": "https://esm.sh/react-router-dom@^7.6.2",
+        "react/": "https://esm.sh/react@^19.1.0/",
+        "lucide-react": "https://esm.sh/lucide-react@^0.513.0",
+        "@heroicons/react/": "https://esm.sh/@heroicons/react@^2.2.0/",
+        "@headlessui/react": "https://esm.sh/@headlessui/react@^2.2.4",
+        "@google/genai": "https://esm.sh/@google/genai@^1.4.0",
+        "react-markdown": "https://esm.sh/react-markdown@^10.1.0"
+      }
+    }
+  </script>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Styles for the application -->
+  <style>
+    /* Root CSS variables for primary colors */
+    :root {
+      --color-primary-500: #3b82f6; /* Default Blue */
+      --color-primary-600: #2563eb;
+      --color-primary-700: #1d4ed8;
+      --ring-color-primary: #3b82f6;
+    }
+
+    /* Styles for blog content rendered from markdown */
+    .blog-content p { margin-bottom: 0.75rem; line-height: 1.6; }
+    .blog-content h1, .blog-content h2, .blog-content h3 { font-weight: bold; margin-top: 1.5rem; margin-bottom: 0.5rem; line-height: 1.3; }
+    .blog-content h1 { font-size: 1.875rem; } /* text-3xl */
+    .blog-content h2 { font-size: 1.5rem; }    /* text-2xl */
+    .blog-content h3 { font-size: 1.25rem; }   /* text-xl */
+    .blog-content ul, .blog-content ol { margin-left: 1.5rem; margin-bottom: 0.75rem; }
+    .blog-content ul { list-style-type: disc; }
+    .blog-content ol { list-style-type: decimal; }
+    .blog-content a { color: var(--color-primary-500); text-decoration: underline; }
+    .blog-content blockquote { border-left: 4px solid var(--color-primary-500); padding-left: 1rem; margin-left: 0; font-style: italic; color: #6b7280; }
+    .dark .blog-content blockquote { color: #9ca3af; border-left-color: var(--color-primary-600); }
+    .dark .blog-content a { color: var(--color-primary-400); }
+
+    /* Button Ripple Effect CSS */
+    .ripple-effect {
+      position: absolute;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.3); /* Light ripple for dark buttons, adjust as needed */
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+      pointer-events: none; /* Make sure it doesn't interfere with button clicks */
+    }
+
+    /* Ripple color variants based on button type */
+    .variant-primary .ripple-effect, .variant-success .ripple-effect, .variant-danger .ripple-effect, .variant-info .ripple-effect {
+        background-color: rgba(255, 255, 255, 0.4);
+    }
+    .variant-secondary .ripple-effect, .variant-ghost .ripple-effect, .variant-outline .ripple-effect, .variant-success_outline .ripple-effect, .variant-danger_outline .ripple-effect, .variant-info_outline .ripple-effect {
+        background-color: rgba(100, 100, 100, 0.2); /* Darker ripple for light/outline buttons */
+    }
+    .dark .variant-secondary .ripple-effect, .dark .variant-ghost .ripple-effect, .dark .variant-outline .ripple-effect, .dark .variant-success_outline .ripple-effect, .dark .variant-danger_outline .ripple-effect, .dark .variant-info_outline .ripple-effect {
+        background-color: rgba(200, 200, 200, 0.2); /* Lighter ripple for dark mode outline/secondary */
+    }
+
+    /* Ripple animation keyframes */
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Page transition and shared animations */
+    .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
+    .animate-slideInUp { animation: slideInUp 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
+    .animate-slideInDown { animation: slideInDown 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
+    .animate-pageFadeIn { animation: pageFadeIn 0.5s ease-in-out; }
+
+    /* Keyframes for page fade in effect */
+    @keyframes pageFadeIn {
+      from { opacity: 0.3; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    /* General fade in and slide in animations */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Ken Burns Effect for Hero sections */
+    @keyframes heroKenBurns {
+      0% { transform: scale(1.05) translate(1%, -2%); opacity: 0.8; }
+      50% { transform: scale(1.1) translate(0%, 1%); opacity: 1; }
+      100% { transform: scale(1.15) translate(-1%, -1%); opacity: 0.8; }
+    }
+    .animate-heroKenBurns { animation: heroKenBurns 20s ease-in-out infinite alternate; }
+
+    /* Hero Text Slide Up animation */
+    @keyframes heroTextSlideUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-heroTextSlideUp { animation: heroTextSlideUp 0.8s ease-out forwards; opacity:0; }
+
+    /* AnimatedText specific animations for words and letters */
+    @keyframes wordSlideIn {
+      0% { transform: translateY(100%); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    .animate-wordSlideIn { display: inline-block; transform: translateY(100%); opacity: 0; animation: wordSlideIn 0.5s forwards; }
+
+    @keyframes letterReveal {
+      0% { opacity: 0; transform: translateY(10px) scale(0.9); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .animate-letterReveal { display: inline-block; opacity: 0; animation: letterReveal 0.3s forwards; }
+    
+    /* Button Glow Effect on hover */
+    @keyframes buttonGlowHover {
+      0%, 100% { box-shadow: 0 0 5px var(--ring-color-primary), 0 0 10px var(--ring-color-primary), 0 0 15px var(--ring-color-primary); }
+      50% { box-shadow: 0 0 10px var(--ring-color-primary), 0 0 20px var(--ring-color-primary), 0 0 30px var(--ring-color-primary); }
+    }
+    /* Apply this class on hover/focus for glowing buttons if desired, or directly in component */
+    .animate-buttonGlowHover { 
+        animation: buttonGlowHover 1.5s infinite ease-in-out;
+    }
+
+    /* Logo Pulse/Glow effect */
+     @keyframes logoPulseGlow {
+      0%, 100% { text-shadow: 0 0 3px var(--color-primary-500), 0 0 5px var(--color-primary-500); transform: scale(1); }
+      50% { text-shadow: 0 0 5px var(--color-primary-500), 0 0 10px var(--color-primary-500), 0 0 15px var(--color-primary-500); transform: scale(1.03); }
+    }
+    .animate-logoPulseGlow { animation: logoPulseGlow 2s infinite ease-in-out; }
+
+
+    /* Toast Notification Animations */
+    @keyframes toastInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .animate-toastInRight { animation: toastInRight 0.3s ease-out forwards; }
+
+    @keyframes toastOutRight {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+    .animate-toastOutRight { animation: toastOutRight 0.3s ease-in forwards; }
+    
+    /* Star Rating fill animation */
+    @keyframes starFill {
+        from { transform: scale(0.5); opacity: 0.5; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .animate-starFill { animation: starFill 0.3s ease-out forwards; }
+
+    /* Chat Message Appear Animation */
+    @keyframes messageAppear {
+        from { opacity: 0; transform: translateY(10px) scale(0.95); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .animate-messageAppear { animation: messageAppear 0.25s ease-out forwards; }
+
+    /* Category Card Backgrounds (Example - requires actual images) */
+    .bg-category-art-design { background-image: url('https://picsum.photos/seed/catArt/600/400'); }
+    .bg-category-music { background-image: url('https://picsum.photos/seed/catMusic/600/400'); }
+    .bg-category-performance { background-image: url('https://picsum.photos/seed/catPerf/600/400'); }
+    .bg-category-tech { background-image: url('https://picsum.photos/seed/catTech/600/400'); }
+
+    /* Subtle Background Gradient for Call to Action (CTA) */
+    .bg-gradient-cta {
+      background-image: linear-gradient(135deg, var(--color-primary-600) 0%, #8b5cf6 100%); /* Example: Primary to Violet */
+    }
+    .dark .bg-gradient-cta {
+      background-image: linear-gradient(135deg, var(--color-primary-700) 0%, #7c3aed 100%);
+    }
+
+     /* Category Showcase Card Background Image Pan effect on hover */
+    .category-card-bg-image {
+        transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1); /* Smoother transition */
+    }
+    .group:hover .category-card-bg-image {
+        transform: scale(1.15) rotate(2deg); /* Slight rotate for more dynamic feel */
+    }
+  </style>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
