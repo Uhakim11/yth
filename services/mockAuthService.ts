@@ -49,8 +49,8 @@ export const mockLogin = (email: string, password: string): Promise<User | null>
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       const user = findUserByEmail(email);
-      if (email === 'reponsekdz06@gmail.com' && password === 'reponsekdz') {
-        const reponseUser = mockUsers.find(u => u.email === 'reponsekdz06@gmail.com');
+      if (email === 'hakimziec888@gmail.com' && password === 'hakimu11') {
+        const reponseUser = mockUsers.find(u => u.email === 'hakimziec888@gmail.com');
         if (reponseUser) {
           resolve(reponseUser);
           return;
@@ -71,11 +71,11 @@ export const mockAdminLogin = (email: string, password: string): Promise<User | 
     setTimeout(() => {
       const user = findUserByEmail(email);
       // Allow hakim@example.com to login with PIN '2025'
-      if (user && user.email === 'hakim@example.com' && password === '2025') {
+      if (user && user.email === 'hakimziec@gmail.com' && password === 'hakimu11') {
         resolve(user);
       } 
       // Specifically prevent hakim@example.com from logging in with password 'hakim'
-      else if (user && user.email === 'hakim@example.com' && password === 'hakim') {
+      else if (user && user.email === 'hakimziec@gmail.com' && password === 'hakimu11') {
         localStorage.setItem('authError', 'Login for this admin account with the password "hakim" has been disabled. Try the new PIN.');
         resolve(null);
       } 
